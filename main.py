@@ -9,7 +9,7 @@ class field:
     self.__field = [[0 for _ in range(size) ]for _ in range(size)]
     self.__cover = [["?" for _ in range(size) ]for _ in range(size)]
     self.__visited = []
-    self.__mine_amount = int((self.__size**2)*self.__density)//2
+    self.__mine_amount = int((self.__size**2)*self.__density)//(random.randint(1,4))
    
     self.__undiscover_mine = self.__mine_amount
     
@@ -97,6 +97,9 @@ class field:
     if self.__cover[x][y] == "f":
       self.__cover[x][y] = "?"
       self.__undiscover_mine += 1
+      
+  def getMineAmount(self):
+    return self.__mine_amount
         
 
 
@@ -109,26 +112,34 @@ class game:
 
   def start(self):
     end = False
+    print(f'There is {self.field.getMineAmount()} mines in the field')
     while not end:
       cover = self.field.coverArray()
       self.showField(cover)
       print("Please enter a coord")
       x,y = int(input("x: ")),int(input("y: "))
-      option = int(input("Option 1: dig \nOption 2: flag\nOption 3: Remove Flag\nOption: "))
-      if option == 1:
+      option = input("Option 1: dig \nOption 2: flag\nOption 3: Remove Flag\nOption: ")
+      if not option.isdigit():
+        print("Invalid option")
+      elif int(option) == 1:
         if not self.field.checkMine(x,y):
           self.field.showBlock(x,y)
         else:
-          print("Hit a mine")
+          print("Hit a mine\nGame Over")
           self.showField(self.field.fieldArray())
           break
-      elif option == 2:
+      elif int(option) == 2:
         result = self.field.setFlag(x,y)
         if result:
           print("You Win!!")
           break
-      elif option == 3:
+      elif int(option) == 3:
         self.field.removeFlag(x,y)
+      
+      else:
+        print("Invalid Option!")
+        
+      
         
   
   def showField(self,array):
@@ -143,3 +154,4 @@ class game:
         row_string += f'{j} '
       print(row_string)
       y_array +=1
+      
