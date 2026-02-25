@@ -10,7 +10,7 @@ class field:
     self.__cover = [["?" for _ in range(size) ]for _ in range(size)]
     self.__visited = []
     self.__mine_amount = int((self.__size**2)*self.__density)//2
-    print(self.__mine_amount)
+   
     self.__undiscover_mine = self.__mine_amount
     
   def generate_field(self):
@@ -110,7 +110,6 @@ class game:
   def start(self):
     end = False
     while not end:
-      self.showField(self.field.fieldArray())
       cover = self.field.coverArray()
       self.showField(cover)
       print("Please enter a coord")
