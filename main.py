@@ -9,18 +9,24 @@ class field:
     self.__field = [[0 for _ in range(size) ]for _ in range(size)]
     self.__cover = [["?" for _ in range(size) ]for _ in range(size)]
     self.__visited = []
-
+    self.__mine_amount = int((self.__size**2)*self.__density)//2
+    print(self.__mine_amount)
+    self.__undiscover_mine = self.__mine_amount
+    
   def generate_field(self):
-    mine_amount = int((self.__size**2)*self.__density)
-    print(mine_amount)
-    amount_left = mine_amount
+    
+    amount_left = self.__mine_amount
     while amount_left > 0:
       for x in range(self.__size):
         for y in range(self.__size):
-          if self.__field[x][y] != "m":
-            if random.randint(1,10)>8:
-              self.__field[x][y] = "m"
-              amount_left -= 1
+          if amount_left <= 0:
+                break
+          else:
+            if self.__field[x][y] != "m":
+              if random.randint(1,100)>99:
+                self.__field[x][y] = "m"
+                amount_left -= 1
+              
     self.count_surround()
 
 
@@ -69,8 +75,29 @@ class field:
             self.showBlock(x+1, y+1)  
 
     # If the cell is not zero-valued            
-      if self.__field[x][y] != 0:
+      if self.__field[x][y] != 0 and self.__field[x][y] != "m":
         self.__cover[x][y] = self.__field[x][y]
+      
+  def checkMine(self,y,x):
+    if self.__field[x][y] == "m":
+      return True
+    else:
+      return False
+      
+  def setFlag(self,y,x):
+    self.__cover[x][y] = "f"
+    if self.__field[x][y] == "m":
+      self.__undiscover_mine -= 1
+    if self.__undiscover_mine <= 0:
+      return True
+    else:
+      return False
+  
+  def removeFlag(self,y,x):
+    if self.__cover[x][y] == "f":
+      self.__cover[x][y] = "?"
+      self.__undiscover_mine += 1
+        
 
 
 class game:
@@ -83,16 +110,37 @@ class game:
   def start(self):
     end = False
     while not end:
+      self.showField(self.field.fieldArray())
       cover = self.field.coverArray()
-      for i in cover:
-        row_string = ""
-        for j in i:
-          row_string += f'{j} '
-        print(row_string)
+      self.showField(cover)
       print("Please enter a coord")
-      self.field.showBlock(int(input("x: ")),int(input("y: ")))
-
-
-
-
-
+      x,y = int(input("x: ")),int(input("y: "))
+      option = int(input("Option 1: dig \nOption 2: flag\nOption 3: Remove Flag\nOption: "))
+      if option == 1:
+        if not self.field.checkMine(x,y):
+          self.field.showBlock(x,y)
+        else:
+          print("Hit a mine")
+          self.showField(self.field.fieldArray())
+          break
+      elif option == 2:
+        result = self.field.setFlag(x,y)
+        if result:
+          print("You Win!!")
+          break
+      elif option == 3:
+        self.field.removeFlag(x,y)
+        
+  
+  def showField(self,array):
+    x_array = "  "
+    for l in range(len(array[0])):
+      x_array += f'{l} '
+    print(x_array)
+    y_array = 0
+    for i in array:
+      row_string = f'{y_array} '
+      for j in i:
+        row_string += f'{j} '
+      print(row_string)
+      y_array +=1
