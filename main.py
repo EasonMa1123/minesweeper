@@ -23,7 +23,7 @@ class field:
                 break
           else:
             if self.__field[x][y] != "m":
-              if random.randint(1,100)>99:
+              if random.randint(1,1000)>999:
                 self.__field[x][y] = "m"
                 amount_left -= 1
               
@@ -57,19 +57,19 @@ class field:
       if self.__field[x][y] == 0:
         self.__cover[x][y] = self.__field[x][y]
         # Recursive calls for the neighbouring cells
-        if x > 0:
+        if x >= 0:
             self.showBlock(x-1, y)
         if x < self.__size-1:
             self.showBlock(x+1, y)
-        if y > 0:
+        if y >= 0:
             self.showBlock(x, y-1)
         if y < self.__size-1:
             self.showBlock(x, y+1)    
-        if x > 0 and y > 0:
+        if x >= 0 and y >= 0:
             self.showBlock(x-1, y-1)
-        if x > 0 and y < self.__size-1:
+        if x >= 0 and y < self.__size-1:
             self.showBlock(x-1, y+1)
-        if x < self.__size-1 and y > 0:
+        if x < self.__size-1 and y >= 0:
             self.showBlock(x+1, y-1)
         if x < self.__size-1 and y < self.__size-1:
             self.showBlock(x+1, y+1)  
@@ -143,15 +143,35 @@ class game:
         
   
   def showField(self,array):
-    x_array = "  "
-    for l in range(len(array[0])):
-      x_array += f'{l} '
-    print(x_array)
-    y_array = 0
-    for i in array:
-      row_string = f'{y_array} '
-      for j in i:
-        row_string += f'{j} '
-      print(row_string)
-      y_array +=1
-      
+    
+    print()
+    print("\t\t\tMINESWEEPER\n")
+    n = len(array)
+    st = "   "
+    for i in range(n):
+        st = st + "     " + str(i)
+    print(st)   
+ 
+    for r in range(n):
+        st = "     "
+        if r == 0:
+            for col in range(n):
+                st = st + "______" 
+            print(st)
+ 
+        st = "     "
+        for col in range(n):
+            st = st + "|     "
+        print(st + "|")
+         
+        st = "  " + str(r) + "  "
+        for col in range(n):
+            st = st + "|  " + str(array[r][col]) + "  "
+        print(st + "|") 
+ 
+        st = "     "
+        for col in range(n):
+            st = st + "|_____"
+        print(st + '|')
+ 
+    print()
